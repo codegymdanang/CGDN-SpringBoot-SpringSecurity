@@ -89,3 +89,5 @@ values (2, 1, 2);
 
 insert into user_role (ID, USER_ID, ROLE_ID)
 values (3, 2, 2);
+
+https://o7planning.org/en/11543/create-a-login-application-with-spring-boot-spring-security-spring-jdbc
