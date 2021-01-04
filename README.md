@@ -90,4 +90,74 @@ values (2, 1, 2);
 insert into user_role (ID, USER_ID, ROLE_ID)
 values (3, 2, 2);
 
-https://o7planning.org/en/11543/create-a-login-application-with-spring-boot-spring-security-spring-jdbc
+## Neu nhu cac em mong muon kiem tra xem password co dung khong thi minh phai viet 1 class rieng va ke thua lai class AuthenticationProvider  nhu sau. Trong phuong thuc override authentication thi minh kiem tra password co dung khong
+
+public class MyClass implements AuthenticationProvider {
+
+public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+		
+		if (authentication.getPrincipal() == null || authentication.getCredentials() == null) {
+			throw new BadCredentialsException("Username or Password empty");
+		}
+
+		
+		String username = authentication.getName();
+        String password = authentication.getCredentials().toString();
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+		if (userDetails == null) {
+			logger.info("User {} not existed", username);
+			throw new BadCredentialsException("User not found");
+		}
+
+		// Authenticate
+		String passwordHash = CommonUtils.md5(password);
+		if(!passwordHash.equals(userDetails.getPassword())){
+			logger.info("User {} has enter an invalid password", username);
+			throw new BadCredentialsException("Invalid password");
+			
+		}
+
+		UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(userDetails,
+				authentication.getCredentials(), userDetails.getAuthorities());
+		
+		logger.info("Leaving AirtimeAuthenticationProvider.authenticate()");
+
+		return result;
+	}public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+		logger.info("Enteriing AirtimeAuthenticationProvider.authenticate()");
+		
+		if (authentication.getPrincipal() == null || authentication.getCredentials() == null) {
+			throw new BadCredentialsException("Username or Password empty");
+		}
+
+		
+		String username = authentication.getName();
+        String password = authentication.getCredentials().toString();
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+		if (userDetails == null) {
+			logger.info("User {} not existed", username);
+			throw new BadCredentialsException("User not found");
+		}
+
+		// Authenticate
+		String passwordHash = CommonUtils.md5(password);
+		if(!passwordHash.equals(userDetails.getPassword())){
+			logger.info("User {} has enter an invalid password", username);
+			throw new BadCredentialsException("Invalid password");
+			
+		}
+
+		UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(userDetails,
+				authentication.getCredentials(), userDetails.getAuthorities());
+		
+		logger.info("Leaving AirtimeAuthenticationProvider.authenticate()");
+
+		return result;
+	}
+  }
